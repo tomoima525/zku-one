@@ -1,0 +1,10 @@
+{
+  "name": "q1-circom",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "tomo",
+  "license": "MIT",
+  "dependencies": {
+    "circomlib": "^2.0.3"
+  }
+}
