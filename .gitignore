@@ -63,3 +63,6 @@ typings/
 tmp
 
 .DS_Store
+
+*.ptau
+*.zkey
