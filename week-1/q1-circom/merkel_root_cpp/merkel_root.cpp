@@ -1714,12 +1714,12 @@ PFrElement aux_dest = &lvar[2];
 // end load src
 Fr_copy(aux_dest,&circuitConstants[1]);
 }
-Fr_lt(&expaux[0],&lvar[2],&circuitConstants[17]); // line circom 62
+Fr_lt(&expaux[0],&lvar[2],&circuitConstants[17]); // line circom 60
 while(Fr_isTrue(&expaux[0])){
 {
 PFrElement aux_dest = &lvar[3];
 // load src
-Fr_div(&expaux[0],&lvar[2],&circuitConstants[5]); // line circom 63
+Fr_div(&expaux[0],&lvar[2],&circuitConstants[5]); // line circom 61
 // end load src
 Fr_copy(aux_dest,&expaux[0]);
 }
@@ -1768,11 +1768,11 @@ MiMCSponge_1_run(mySubcomponents[cmp_index_ref],ctx);
 {
 PFrElement aux_dest = &lvar[2];
 // load src
-Fr_add(&expaux[0],&lvar[2],&circuitConstants[5]); // line circom 62
+Fr_add(&expaux[0],&lvar[2],&circuitConstants[5]); // line circom 60
 // end load src
 Fr_copy(aux_dest,&expaux[0]);
 }
-Fr_lt(&expaux[0],&lvar[2],&circuitConstants[17]); // line circom 62
+Fr_lt(&expaux[0],&lvar[2],&circuitConstants[17]); // line circom 60
 }
 {
 PFrElement aux_dest = &lvar[2];
@@ -1780,7 +1780,7 @@ PFrElement aux_dest = &lvar[2];
 // end load src
 Fr_copy(aux_dest,&circuitConstants[1]);
 }
-Fr_lt(&expaux[0],&lvar[2],&circuitConstants[13]); // line circom 71
+Fr_lt(&expaux[0],&lvar[2],&circuitConstants[13]); // line circom 70
 while(Fr_isTrue(&expaux[0])){
 {
 PFrElement aux_dest = &lvar[3];
@@ -1835,11 +1835,11 @@ MiMCSponge_1_run(mySubcomponents[cmp_index_ref],ctx);
 {
 PFrElement aux_dest = &lvar[2];
 // load src
-Fr_add(&expaux[0],&lvar[2],&circuitConstants[5]); // line circom 71
+Fr_add(&expaux[0],&lvar[2],&circuitConstants[5]); // line circom 70
 // end load src
 Fr_copy(aux_dest,&expaux[0]);
 }
-Fr_lt(&expaux[0],&lvar[2],&circuitConstants[13]); // line circom 71
+Fr_lt(&expaux[0],&lvar[2],&circuitConstants[13]); // line circom 70
 }
 {
 PFrElement aux_dest = &signalValues[mySignalStart + 0];
