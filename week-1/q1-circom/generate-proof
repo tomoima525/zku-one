@@ -1,0 +1,62 @@
+#!/bin/bash
+
+if [ -z "$1" ]
+  then
+    echo "No circom file supplied"
+    exit 1
+fi
+
+if [ -z "$2" ]
+  then
+    echo "No input file supplied"
+    exit 1
+fi
+echo "circom file: $1"
+echo "input file: $2"
+# compile circuit
+circom $1 --r1cs --wasm --sym --c;
+
+wasm=$(echo "$1" | sed "s/circom/wasm/g")
+echo "wasm file: $wasm"
+ 
+jsdir=$(echo "$1" | sed "s/.circom/_js/g")
+echo "js directory: $jsdir"
+
+# mv to js directory
+cd $jsdir
+
+# generate witness from wasm file
+node generate_witness.js $wasm ../$2 witness.wtns
+echo "witness generated"
+
+#  trusted setup Phase1
+snarkjs powersoftau new bn128 15 pot12_0000.ptau -v
+echo "trusted setup: create new setup with 15 constraints"
+
+# contribute to the Phase1
+snarkjs powersoftau contribute pot12_0000.ptau pot12_0001.ptau --name="First contribution" -v
+echo "trusted setup: first contribution"
+
+# prepare for Phase2 setup, which is specific for this circuit. pot12_final is the output of Phase1
+snarkjs powersoftau prepare phase2 pot12_0001.ptau pot12_final.ptau -v  
+echo "trusted setup: prepared phase2 setup"
+
+r1cs=$(echo "$1" | sed "s/circom/r1cs/g")
+echo "r1cs file: $r1cs"
+# Setup Phase2 using groth16 proving system
+snarkjs groth16 setup ../$r1cs pot12_final.ptau merkel_root_0000.zkey 
+echo "trusted setup: Setup Phase2 using groth16"
+
+
+zkey_0000=$(echo "$1" | sed "s/.circom/_0000.zkey/g")
+zkey_0001=$(echo "$1" | sed "s/.circom/_0001.zkey/g")
+# Contribute
+snarkjs zkey contribute $zkey_0000 $zkey_0001 --name="1st Contributor Name" -v
+echo "trusted setup: Contribute to Phase2 with zkey"
+
+# export verification key
+snarkjs zkey export verificationkey $zkey_0001 verification_key.json
+echo "trusted setup: export verification key"
+
+# generate proof
+snarkjs groth16 prove $zkey_0001 witness.wtns proof.json public.json 
