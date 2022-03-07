@@ -33,22 +33,34 @@ contract TxMerkleTree {
         uint256 n = leaves.length;
         uint256 offset = 0;
 
-        while (n > 0) {
+        while (n > 1) {
             // create a hash using pairs of nodes. If nodes are odd,
-            // then the last one will be skipped in this for loop and used in the next step
-            for (uint256 i = 0; i < n - 1; i += 2) {
-                hashes.push(
-                    keccak256(
-                        abi.encodePacked(
-                            hashes[offset + i],
-                            hashes[offset + i + 1]
+            // then the last node in the for-loop will be hashed with itself
+            for (uint256 i = 0; i < n; i += 2) {
+                // the last node when the length is odd
+                if (i == n - 1) {
+                    hashes.push(
+                        keccak256(abi.encodePacked(hashes[offset + i]))
+                    );
+                } else {
+                    hashes.push(
+                        keccak256(
+                            abi.encodePacked(
+                                hashes[offset + i],
+                                hashes[offset + i + 1]
+                            )
                         )
-                    )
-                );
+                    );
+                }
             }
             offset += n;
-            // Repeat creating hashes while it reaches to 0
-            n = n / 2;
+            // Repeat creating hashes while it reaches to 1
+            if (n % 2 == 0) {
+                n = n / 2;
+            } else {
+                // odd
+                n = (n + 1) / 2;
+            }
         }
     }
 
