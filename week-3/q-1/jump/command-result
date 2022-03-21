@@ -1,0 +1,5 @@
+Commands
+$ node generate_witness.js circuit.wasm valid_input_2.json witness.wtns
+$ snarkjs groth16 fullprove valid_input_2.json circuit.wasm circuit_0001.zkey proof.json public.json
+$ snarkjs zkey export soliditycalldata public.json proof.json                                        
+["0x0d2e931d2bc300fdb2c2d97cd14665e8296f8763800c91359a2b61d78d4799d1", "0x17d48fc163def673a075dc5ff020b6f218a87cd55973ba04d68f5fdd1a0c602d"],[["0x046b34f2c65a8a39bb8f0a000f692d7da4372fff54a6e395b2f42300590187ae", "0x2319ed1b45a58d20cb9c7d56c3c42571a21362922f898d6290ae6b55a0db612f"],["0x041f1bdc773d5418d5b0e16f412ad6cb32de52a7ab555f557693477896269a5d", "0x139689632c26ede0e7453ef7ff810485d8d8292e20ca45a323db7f4728bea425"]],["0x14baa4a8c69c6bfcba6862338429c240c78e7112ecad7b575bb9e0ce0427b4bf", "0x018be93277e35271b8344e807cb6a04d9fb34bcef8527c24f632ed65c438a43b"],["0x0c51b1959c433ca4c51f678cac4b6d90bb4f313fe3a35eecf65a1824db60b2f7","0x1f45f18f1aeb0bfb9b8df565a4d2fe56a04db2bf430614a74778bef8db8f6ef7","0x26e4d9487eaaedefee1d2a2125bc340d77384618e27c56153e11b9e15e1ec577"]
