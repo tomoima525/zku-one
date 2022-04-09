@@ -28,6 +28,13 @@ contract TokenLockerOnEthereum is TokenLocker, OwnableUpgradeable {
         otherSideBridge = otherSide;
     }
 
+    /**
+     @dev Called when redeeming assets on Ethereum.
+     When redeeming, assets are burned on the Harmony network. To validate, the contract compares proof of burn which is the MMR proof and the checkpoint which is sent by relayers from Harmony network.
+     @param header      - block header to be verified
+     @param mmrProof    - proof of MMR which has the transaction of burn
+     @param receiptdata - transaction receipt of burn
+     */
     function validateAndExecuteProof(
         HarmonyParser.BlockHeader memory header,
         MMRVerifier.MMRProof memory mmrProof,
@@ -45,9 +52,14 @@ contract TokenLockerOnEthereum is TokenLocker, OwnableUpgradeable {
             abi.encodePacked(blockHash, rootHash, receiptdata.key)
         );
         require(spentReceipt[receiptHash] == false, "double spent!");
+        // Verifies that receipt data stored is valid
+        // (1) the root of receiptdata matches the root of given header
+        // (2) stored receiptdata is legit
         (status, message) = HarmonyProver.verifyReceipt(header, receiptdata);
         require(status, "receipt data could not be verified");
         spentReceipt[receiptHash] = true;
+
+        // If the proof is verified then unlock the same amount of assets that was burned on Harmony.
         uint256 executedEvents = execute(receiptdata.expectedValue);
         require(executedEvents > 0, "no valid event");
     }
