@@ -9,7 +9,7 @@ import "./EthereumParser.sol";
 import "./lib/EthUtils.sol";
 import "./ethash/ethash.sol";
 
-/// @title Ethereum light client
+/// @title Ethereum light client that stores block headers on Harmony network
 contract EthereumLightClient is Ethash, Initializable, PausableUpgradeable {
     using SafeMathUpgradeable for uint256;
     
@@ -87,7 +87,12 @@ contract EthereumLightClient is Ethash, Initializable, PausableUpgradeable {
         _setFirstBlock(storedBlock);
     }
 
-    //uint32 constant loopAccesses = 64;      // Number of accesses in hashimoto loop
+    /**
+      @dev Add block header information from Ethereum block chain.
+      @param _rlpHeader - header block hash
+      @param cache      - block info upto 7 days
+      @param proofs     - proofs to verify PoW on Ethereum block chain
+     */
     function addBlockHeader(
         bytes memory _rlpHeader,
         bytes32[4][loopAccesses] memory cache,
@@ -187,6 +192,10 @@ contract EthereumLightClient is Ethash, Initializable, PausableUpgradeable {
         return bytes32(blocks[uint256(blockHash)].receiptsRoot);
     }
 
+    /**
+      @dev Check the validity of receipt hash. Used in verification function in TokenLocker Contract on Harmony.
+      If the receipt and proof are valid, then assets will be minted
+     */
     function VerifyReceiptsHash(bytes32 blockHash, bytes32 receiptsHash)
         external
         view
