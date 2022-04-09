@@ -20,7 +20,7 @@ describe('HarmonyProver', function () {
         mmrVerifier = await MMRVerifier.deploy();
         await mmrVerifier.deployed();
 
-        // await HarmonyProver.link('MMRVerifier', mmrVerifier);
+        // Setup Harmony prover contract with Merkle Mountain Range included
         HarmonyProver = await ethers.getContractFactory(
             "HarmonyProver",
             {
@@ -34,8 +34,9 @@ describe('HarmonyProver', function () {
     });
 
     it('parse rlp block header', async function () {
-        let header = await prover.toBlockHeader(hexToBytes(headerData.rlpheader));
-        expect(header.hash).to.equal(headerData.hash);
+      // RLP (Recursive Linear Prefix) is the encoding method used to serialize objects in Ethereum
+      let header = await prover.toBlockHeader(hexToBytes(headerData.rlpheader));
+      expect(header.hash).to.equal(headerData.hash);
     });
 
     it('parse transaction receipt proof', async function () {
@@ -52,6 +53,7 @@ describe('HarmonyProver', function () {
             callback,
             callbackArgs
         );
+        // Calculates the tx proof from transaction hash
         console.log(txProof);
         expect(txProof.header.hash).to.equal(transactions.header);
 
