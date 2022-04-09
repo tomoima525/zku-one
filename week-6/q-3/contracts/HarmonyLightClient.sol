@@ -11,6 +11,7 @@ import "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
 // import "openzeppelin-solidity/contracts/proxy/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/Initializable.sol";
 
+// Light Client that stores checkpoint on Ethereum blockchain
 contract HarmonyLightClient is
     Initializable,
     PausableUpgradeable,
@@ -137,6 +138,11 @@ contract HarmonyLightClient is
 
     }
 
+    /**
+      @dev Store the checkpoint block which contains the accumulated merkle roots of all the blocks
+      until the previous checkpoint block (MMR root)
+      @param rlpHeader RLP representation of block header
+     */
     function submitCheckpoint(bytes memory rlpHeader) external onlyRelayers whenNotPaused {
         HarmonyParser.BlockHeader memory header = HarmonyParser.toBlockHeader(
             rlpHeader
@@ -152,6 +158,7 @@ contract HarmonyLightClient is
         checkPointBlock.epoch = header.epoch;
         checkPointBlock.shard = header.shardID;
         checkPointBlock.time = header.timestamp;
+        // the accumulated merkle roots of all the blocks
         checkPointBlock.mmrRoot = HarmonyParser.toBytes32(header.mmrRoot);
         checkPointBlock.hash = header.hash;
         
@@ -195,7 +202,14 @@ contract HarmonyLightClient is
         checkPointBlock = checkPointBlocks[nearest];
     }
 
+    /**
+      @dev Check the validity of checkpoint. Used at verification function in TokenLocker Contract on Ethereum.
+      If the checkpoint and proof is valid, then assets will be unlocked
+      @param epoch Epoch of the checkpoint
+      @param mmrRoot Root of MMR with the checkpoint
+     */
     function isValidCheckPoint(uint256 epoch, bytes32 mmrRoot) public view returns (bool status) {
+        // Returns true if the checkpoint has been submitted before
         return epochMmrRoots[epoch][mmrRoot];
     }
 }
