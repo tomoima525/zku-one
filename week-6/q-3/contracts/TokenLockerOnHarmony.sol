@@ -32,6 +32,14 @@ contract TokenLockerOnHarmony is TokenLocker, OwnableUpgradeable {
         otherSideBridge = otherSide;
     }
 
+    /**
+     @dev Called when transfering assets from Ethereum.
+     When transfering, assets are minted on the Harmony network. To validate, the contract compares proof of lock which is the MMR proof and the block header which is sent by relayers from Ethereum Network.
+     @param blockNo  - the number of block to verify
+     @param rootHash - the Keccak-256 hash of the root node of the Merkle Patricia Trie.
+     @param mptKey   - key of the node we are profing
+     @param proof    - proof of block hash nodes
+     */
     function validateAndExecuteProof(
         uint256 blockNo,
         bytes32 rootHash,
